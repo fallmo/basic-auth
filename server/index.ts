@@ -8,4 +8,12 @@ app.use(routes);
 
 startupTasks();
 
-app.listen(3000, () => console.log("Server running on port 3000..."));
+const PORT = Deno.env.get("USE_SSL") ? 8443 : 8080;
+
+app.listen({
+  keyFile: Deno.env.get("SSL_KEY_PATH"),
+  certFile: Deno.env.get("SSL_CERT_PATH"),
+  port: PORT,
+});
+
+console.log(`Server listening on port ${PORT}`);

@@ -21,5 +21,5 @@ export const getAuthHandler: handler = async (req, res) => {
   const passwordsMatch = await validateHash(password, user.password);
   if (!passwordsMatch) res.setStatus(400).json({ error: "Credentials do not match" });
 
-  return res.json({ sub: user._id, name: user.name, preffered_username: user.username });
+  return res.json({ sub: user._id, name: user.name, preferred_username: user.username });
 };
