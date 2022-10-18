@@ -1,8 +1,10 @@
 import { ensureDatabase } from "./database.ts";
+import { cryptoRandomString } from "https://deno.land/x/crypto_random_string@1.0.0/mod.ts";
 
-export function startupTasks() {
+export async function startupTasks() {
   ensureEnvironment();
   ensureDatabase();
+  await adminTokenPresent();
   return;
 }
 
@@ -17,5 +19,19 @@ function ensureEnvironment() {
     if (Deno.env.get(val)) continue;
     console.error(`Missing '${val}' Environment Variable`);
     Deno.exit(1);
+  }
+}
+
+async function adminTokenPresent() {
+  const tokenFilePath = `${Deno.cwd()}/admin-token`;
+  try {
+    const adminToken = await Deno.readTextFile(tokenFilePath);
+    Deno.env.set("ADMIN_TOKEN", adminToken);
+    console.log(`Reusing admin token file (${tokenFilePath})...`);
+  } catch (err) {
+    console.log(`Creating new admin token file (${tokenFilePath})...`);
+    const newAdminToken = await cryptoRandomString({ length: 101, type: "url-safe" });
+    Deno.env.set("ADMIN_TOKEN", newAdminToken);
+    await Deno.writeTextFile(tokenFilePath, newAdminToken, { append: false });
   }
 }

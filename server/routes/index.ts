@@ -11,6 +11,11 @@ import { requiresAdmin } from "../middlewares/index.ts";
 
 const router = Router();
 
+// ping
+router.get("/", requiresAdmin, (_req, res) => {
+  res.send("ok\n");
+});
+
 // Check credentials against DB (basic auth)
 router.get("/auth", getAuthHandler);
 
