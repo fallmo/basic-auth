@@ -1,0 +1,16 @@
+[Unit]
+Description=Basic Authentication Server
+After=network-online.target
+
+[Service]
+Environment=PORT=8081
+Environment=DB_HOST=127.0.0.1
+Environment=DB_NAME=auth
+
+Type=simple
+WorkingDirectory=/code/server
+ExecStart=/usr/local/bin/deno run --allow-env --allow-read --allow-write --allow-net /code/server/index.ts
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

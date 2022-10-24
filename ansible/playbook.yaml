@@ -1,0 +1,58 @@
+- name: Setup MongoDB
+  hosts: test
+  gather_facts: false
+  tasks:
+    - name: Add Mongo Repo
+      yum_repository:
+        baseurl: https://repo.mongodb.org/yum/redhat/8Server/mongodb-org/6.0/x86_64/
+        name: mongodb-org-6.0
+        description: "MongoDB Repository"
+        enabled: true
+        gpgcheck: false
+        state: present
+
+    - name: Install MongoDB
+      yum:
+        name: mongodb-org
+        state: present
+
+    - name: Enable MongoDB service
+      service:
+        name: mongod
+        state: started
+        enabled: true
+
+- name: Setup Deno Server
+  hosts: test
+  gather_facts: false
+  tasks:
+    - name: Clone Repository
+      git:
+        repo: https://github.com/fallmo/basic-auth.git
+        clone: true
+        dest: /code
+
+    - name: Ensure latest changes
+      shell: cd /code && git pull
+      register: output
+      changed_when: output.stdout != "Already up to date."
+
+    - name: Install Deno Executable
+      unarchive:
+        remote_src: true
+        src: https://github.com/denoland/deno/releases/download/v1.26.2/deno-x86_64-unknown-linux-gnu.zip
+        dest: /usr/local/bin
+        mode: "777"
+
+    - name: Copy Service File
+      copy:
+        src: "{{ playbook_dir }}/basic-auth-server.service"
+        dest: /etc/systemd/system
+
+    - name: Start and Enable Basic Auth Server
+      service:
+        name: basic-auth-server
+        state: started
+        enabled: true
+
+    # - name: Allow port 443 through firewall

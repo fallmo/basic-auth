@@ -9,7 +9,7 @@ app.use(routes);
 await startupTasks();
 
 const config: HTTPSOptions = {
-  port: Deno.env.get("PORT") ? +Deno.env.get("PORT") : Deno.env.get("USE_SSL") ? 8443 : 8080,
+  port: Deno.env.get("PORT") ? +Deno.env.get("PORT")! : Deno.env.get("USE_SSL") ? 8443 : 8080,
 };
 
 if (Deno.env.get("USE_SSL")) {
