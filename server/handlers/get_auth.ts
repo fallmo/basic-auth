@@ -16,10 +16,10 @@ export const getAuthHandler: handler = async (req, res) => {
   if (!username || !password) return res.setStatus(400).json({ error: "Malformed authorization header" });
 
   const user = await Users.findOne({ username });
-  if (!user) return res.setStatus(400).json({ error: "User does not exist" });
+  if (!user) return res.setStatus(401).json({ error: "User does not exist" });
 
   const passwordsMatch = await validateHash(password, user.password);
-  if (!passwordsMatch) res.setStatus(400).json({ error: "Credentials do not match" });
+  if (!passwordsMatch) res.setStatus(401).json({ error: "Credentials do not match" });
 
   return res.json({ sub: user._id, name: user.name, preferred_username: user.username });
 };
