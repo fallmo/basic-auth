@@ -12,5 +12,9 @@ export type Group = {
   _id: string;
   name: string;
 };
-// deno-lint-ignore no-explicit-any
-export type handler = (req: OpineRequest, res: OpineResponse, next: NextFunction) => any | Promise<any>;
+export type handler = (
+  req: OpineRequest & { user?: User },
+  res: OpineResponse,
+  next: NextFunction
+  // deno-lint-ignore no-explicit-any
+) => any | Promise<any>;
