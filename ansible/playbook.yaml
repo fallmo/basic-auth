@@ -25,6 +25,15 @@
 - name: Setup Deno Server
   hosts: test
   gather_facts: false
+  handlers:
+  - name: systemd-daemon-reload
+    shell: systemctl daemon-reload
+    
+  - name: restart-basic-auth
+    service:
+      name: basic-auth-server
+      state: restarted
+
   tasks:
     - name: Clone Repository
       git:
@@ -36,6 +45,8 @@
       shell: cd /code && git pull
       register: output
       changed_when: output.stdout != "Already up to date."
+      notify:
+      - restart-basic-auth
 
     - name: Install Deno Executable
       unarchive:
@@ -46,8 +57,24 @@
 
     - name: Copy Service File
       copy:
-        src: "{{ playbook_dir }}/basic-auth-server.service"
+        src: "/code/ansible/basic-auth-server.service"
         dest: /etc/systemd/system
+        remote_src: true
+      notify:
+      - systemd-daemon-reload
+      - restart-basic-auth
+
+
+    - name: Create SSL Directory
+      file:
+        path: /certs
+        state: directory
+
+    - name: Copy SSL Certificates
+      copy:
+        src: "{{ playbook_dir }}/certs/{{ item }}"
+        dest: "/certs/{{ item }}"
+      loop: ["certificate.pem", "privatekey.pem"]
 
     - name: Start and Enable Basic Auth Server
       service:
@@ -55,4 +82,10 @@
         state: started
         enabled: true
 
-    # - name: Allow port 443 through firewall
+    - name: Allow port 443 through firewall
+      ansible.posix.firewalld:
+        service: https
+        state: present
+        immediate: true
+        permanent: true
+      ignore_errors: true

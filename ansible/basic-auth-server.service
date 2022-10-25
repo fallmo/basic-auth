@@ -3,7 +3,11 @@ Description=Basic Authentication Server
 After=network-online.target
 
 [Service]
-Environment=PORT=8081
+Environment=NAMESPACES=accel,guest
+Environment=USE_SSL=true
+Environment=SSL_KEY_PATH=/certs/privatekey.pem
+Environment=SSL_CERT_PATH=/certs/certificate.pem
+Environment=PORT=443
 Environment=DB_HOST=127.0.0.1
 Environment=DB_NAME=auth
 
