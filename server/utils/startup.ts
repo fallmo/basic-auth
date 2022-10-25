@@ -3,13 +3,14 @@ import { cryptoRandomString } from "https://deno.land/x/crypto_random_string@1.0
 
 export async function startupTasks() {
   ensureEnvironment();
+  validateNamespaces();
   ensureDatabase();
   await adminTokenPresent();
   return;
 }
 
 function ensureEnvironment() {
-  const requiredVars: string[] = ["DB_HOST", "DB_NAME"];
+  const requiredVars: string[] = ["DB_HOST", "DB_NAME", "NAMESPACES"];
 
   if (Deno.env.get("USE_SSL")) {
     requiredVars.push("SSL_KEY_PATH", "SSL_CERT_PATH");
@@ -34,4 +35,11 @@ async function adminTokenPresent() {
     Deno.env.set("ADMIN_TOKEN", newAdminToken);
     await Deno.writeTextFile(tokenFilePath, newAdminToken, { append: false });
   }
+}
+
+function validateNamespaces() {
+  console.log(Deno.env.get("NAMESPACES"));
+  if (/^[a-z]+(,[a-z]+)*$/.test(Deno.env.get("NAMESPACES")!)) return;
+  console.error("env NAMESPACES must be a comma seperated list (a-Z)");
+  Deno.exit(1);
 }

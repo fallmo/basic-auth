@@ -1,5 +1,5 @@
-import { handler } from "../types/index.ts";
-import { db, DB_NAME } from "../utils/database.ts";
+import { handler } from "../../types/index.ts";
+import { db, DB_NAME } from "../../utils/database.ts";
 import Schema, { string } from "https://denoporter.sirjosh.workers.dev/v1/deno.land/x/computed_types/src/index.ts";
 
 export const postGroupHandler: handler = (req, res) => {

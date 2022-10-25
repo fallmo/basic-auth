@@ -5,17 +5,12 @@ export type User = {
   name: string;
   username: string;
   password: string;
-  groups: string[];
-  roles: string[];
-  json: string;
+  namespace: string;
 };
 
 export type Group = {
   _id: string;
   name: string;
-  roles: string[];
-  members: [];
-  json: [];
 };
 // deno-lint-ignore no-explicit-any
 export type handler = (req: OpineRequest, res: OpineResponse, next: NextFunction) => any | Promise<any>;

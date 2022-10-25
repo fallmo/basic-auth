@@ -1,8 +1,7 @@
-import { handler } from "../types/index.ts";
-
+import { handler } from "../../types/index.ts";
 import { decode } from "https://deno.land/std@0.82.0/encoding/base64.ts";
-import { Users } from "../utils/database.ts";
-import { validateHash } from "../utils/hashing.ts";
+import { Users } from "../../utils/database.ts";
+import { validateHash } from "../../utils/hashing.ts";
 
 export const getAuthHandler: handler = async (req, res) => {
   const authorizationHeader = req.headers.get("authorization");
@@ -17,6 +16,9 @@ export const getAuthHandler: handler = async (req, res) => {
 
   const user = await Users.findOne({ username });
   if (!user) return res.setStatus(401).json({ error: "User does not exist" });
+
+  if (user.namespace !== req.params.namespace!)
+    return res.setStatus(401).json({ error: "User does not exist in namespace" });
 
   const passwordsMatch = await validateHash(password, user.password);
   if (!passwordsMatch) res.setStatus(401).json({ error: "Credentials do not match" });

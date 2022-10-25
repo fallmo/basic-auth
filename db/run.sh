@@ -7,7 +7,7 @@ start () {
 
 create (){
     mkdir -p $(pwd)/volume && chmod 777 $(pwd)/volume
-    docker run -d --name $container_name -p 27017:27017 -v "$(pwd)"/volume:/data/db mongo
+    docker run -d --name $container_name -p 27017:27017 -v "$(pwd)"/volume:/data/db:Z mongo
 }
 
 if start 

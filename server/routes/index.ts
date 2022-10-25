@@ -1,23 +1,19 @@
 import { Router, json } from "https://deno.land/x/opine@2.0.0/mod.ts";
-import { deleteUserHandler } from "../handlers/delete_user.ts";
-import { getAuthHandler } from "../handlers/get_auth.ts";
-import { getGroupHandler } from "../handlers/get_group.ts";
-import { getGroupsHandler } from "../handlers/get_groups.ts";
-import { getUserHandler } from "../handlers/get_user.ts";
-import { getUsersHandler } from "../handlers/get_users.ts";
-import { postGroupHandler } from "../handlers/post_group.ts";
-import { postUserHandler } from "../handlers/post_user.ts";
+import { deleteUserHandler } from "../handlers/users/delete.ts";
+import { getAuthHandler } from "../handlers/auth/get.ts";
+import { getUserHandler, getUsersHandler } from "../handlers/users/get.ts";
+import { postUserHandler } from "../handlers/users/add.ts";
 import { requiresAdmin } from "../middlewares/index.ts";
 
 const router = Router();
 
 // ping
-router.get("/", requiresAdmin, (_req, res) => {
+router.get("/", (_req, res) => {
   res.send("ok\n");
 });
 
 // Check credentials against DB (basic auth)
-router.get("/auth", getAuthHandler);
+router.get("/:namespace/auth", getAuthHandler);
 
 // Add a users
 router.post("/users", requiresAdmin, json(), postUserHandler);
@@ -29,24 +25,9 @@ router.get("/users", requiresAdmin, getUsersHandler);
 router.get("/users/:id", requiresAdmin, getUserHandler);
 
 // Edit a user
-router.patch("/users/:id", requiresAdmin);
+// router.patch("/users/:id", requiresAdmin);
 
 // Delete a user
 router.delete("/users/:id", requiresAdmin, deleteUserHandler);
-
-// Add a group
-router.post("/groups", requiresAdmin, json(), postGroupHandler);
-
-// Get all groups
-router.get("/groups", requiresAdmin, getGroupsHandler);
-
-// Get group
-router.get("/groups/:id", requiresAdmin, getGroupHandler);
-
-// Edit group
-router.patch("/groups/:id", requiresAdmin);
-
-// Delete group
-router.delete("/groups/:id", requiresAdmin);
 
 export default router;

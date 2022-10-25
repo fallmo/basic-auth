@@ -12,3 +12,9 @@ export const requiresAdmin: handler = (req, res, next) => {
 
   return res.json({ error: "Not authorized" });
 };
+
+export const basicHttpLogger: handler = (req, _res, next) => {
+  const DATA = ["HTTP", req.method, req.url, req.ip, `ENOCH ${Date.now()}`];
+  console.log(DATA.join("  "));
+  next();
+};

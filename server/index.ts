@@ -1,8 +1,11 @@
 import { HTTPSOptions, opine } from "https://deno.land/x/opine@2.0.0/mod.ts";
+import { basicHttpLogger } from "./middlewares/index.ts";
 import routes from "./routes/index.ts";
 import { startupTasks } from "./utils/startup.ts";
 
 const app = opine();
+
+app.use(basicHttpLogger);
 
 app.use(routes);
 
@@ -19,4 +22,4 @@ if (Deno.env.get("USE_SSL")) {
 
 app.listen(config);
 
-console.log(`Server listening on port ${config.port}`);
+console.log(`Server listening on port ${config.port} - for namespaces: '${Deno.env.get("NAMESPACES")}'`);

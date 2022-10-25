@@ -1,6 +1,6 @@
-import { handler } from "../types/index.ts";
-import { Users } from "../utils/database.ts";
-import { stringToObjectId } from "../utils/helpers.ts";
+import { handler } from "../../types/index.ts";
+import { Users } from "../../utils/database.ts";
+import { stringToObjectId } from "../../utils/helpers.ts";
 
 export const deleteUserHandler: handler = async (req, res) => {
   //  remove from OCP first
