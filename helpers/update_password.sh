@@ -8,7 +8,7 @@ read -p "input api url: " API_URL;
 
 PS3="Select namespace: "
 
-select NAMESPACE in nsone nstwo; do break; done
+select NAMESPACE in accel guest; do break; done
 
 read -p "input username: " USERNAME;
 
