@@ -5,6 +5,10 @@ import { getUserHandler, getUsersHandler } from "../handlers/users/get.ts";
 import { postUserHandler } from "../handlers/users/add.ts";
 import { checkBasicAuth, requiresAdmin } from "../middlewares/index.ts";
 import { updatePasswordHandler } from "../handlers/users/update_password.ts";
+import { getGroupHandler, getGroupsHandler } from "../handlers/groups/get_groups.ts";
+import { addGroupHandler } from "../handlers/groups/add_group.ts";
+import { deleteGroupHandler } from "../handlers/groups/delete_group.ts";
+import { editGroupHandler } from "../handlers/groups/edit_group.ts";
 
 const router = Router();
 
@@ -32,5 +36,20 @@ router.delete("/users/:id", requiresAdmin, deleteUserHandler);
 
 // Edit a user
 // router.patch("/users/:id", requiresAdmin);
+
+// Get Groups
+router.get("/groups", requiresAdmin, getGroupsHandler);
+
+// Add Group
+router.post("/groups", requiresAdmin, json(), addGroupHandler);
+
+// Get Group
+router.get("/groups/:name", requiresAdmin, getGroupHandler);
+
+// Delete Group
+router.delete("/groups/:name", requiresAdmin, deleteGroupHandler);
+
+// Edit Group
+router.patch("/groups/:name", requiresAdmin, json(), editGroupHandler);
 
 export default router;

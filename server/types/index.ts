@@ -8,10 +8,6 @@ export type User = {
   namespace: string;
 };
 
-export type Group = {
-  _id: string;
-  name: string;
-};
 export type handler = (
   req: OpineRequest & { user?: User },
   res: OpineResponse,
