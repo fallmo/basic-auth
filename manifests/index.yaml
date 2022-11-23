@@ -1,0 +1,41 @@
+kind: Project
+apiVersion: v1
+metadata:
+  name: basic-auth
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: auth-sa
+  namespace: basic-auth
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: basic-auth-manager
+  labels:
+    custom-role: "true"
+rules:
+  - apiGroups:
+      - user.openshift.io
+    resources:
+      - groups
+      - users
+    verbs:
+      - get
+      - patch
+      - list
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  creationTimestamp: null
+  name: basic-auth-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: basic-auth-manager
+subjects:
+  - kind: ServiceAccount
+    name: auth-sa
+    namespace: basic-auth
